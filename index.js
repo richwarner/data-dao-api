@@ -6,9 +6,9 @@ const database = JSON.parse(fs.readFileSync('./database.json'));
 /* Begin server section */
 import express from 'express';
 
-import cors from "cors"; // for CORS setup, usage: app.use(cors());
+// import cors from "cors"; // for CORS setup, usage: app.use(cors());
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 3030; // default port to listen
