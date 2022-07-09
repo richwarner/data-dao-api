@@ -1,0 +1,28 @@
+[
+    {
+        "id": "62c99218e5931d56f8d8f8dd",
+        "title": "Aliens",
+        "coverUri": "https://nerdist.com/wp-content/uploads/2021/04/Aliens-xenomorph.jpg",
+        "author": "Ronald Shusett",
+        "datePublished": "1/1/2000",  
+        "description": "We're On An Express Elevator To Hell, Goin' Down!",
+        "properties": [
+        "scary",
+        "extra-terrestrial",
+        "dark"
+        ]
+    },
+    {
+        "id": "12c99214g5931dj7f8d8f8dd",
+        "title": "Forrest Gump",
+        "coverUri": "https://i.etsystatic.com/21762175/r/il/bda149/2127544078/il_794xN.2127544078_lxel.jpg",
+        "author": "Eric Roth",
+        "datePublished": "3/19/2014",  
+        "description": "My Mama always said you've got to put the past behind you before you can move on.",
+        "properties": [
+        "scary",
+        "extra-terrestrial",
+        "dark"
+        ]
+    }
+]
