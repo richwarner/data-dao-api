@@ -1,5 +1,7 @@
+/* Begin datbase section */
 import fs from 'fs';
 const database = JSON.parse(fs.readFileSync('./database.json'));
+/* End database section */
 
 /* Begin server section */
 import express from 'express';
