@@ -1,4 +1,3 @@
-// Define "require"
 import fs from 'fs';
 const database = JSON.parse(fs.readFileSync('./database.json'));
 
