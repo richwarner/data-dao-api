@@ -1,24 +1,24 @@
 /* Begin datbase section */
-// import fs from 'fs';
-// const database = JSON.parse(fs.readFileSync('./database.json'));
+import fs from 'fs';
+const database = JSON.parse(fs.readFileSync('./database.json'));
 /* End database section */
 
 /* Begin server section */
 import express from 'express';
 
-// import cors from "cors"; // for CORS setup, usage: app.use(cors());
+import cors from "cors"; // for CORS setup, usage: app.use(cors());
 const app = express();
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 3030; // default port to listen
 /* End server section */
 
 /* Begin storage api section */
-// import { Web3Storage } from 'web3.storage'
+import { Web3Storage } from 'web3.storage'
 
 // Construct with token and endpoint
-// const client = new Web3Storage({ token: process.env.STORAGE_API_TOKEN })
+const client = new Web3Storage({ token: process.env.STORAGE_API_TOKEN })
 
 // const fileInput = document.querySelector('input[type="file"]')
 
@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-    res.json("hello");
+    res.json(database);
   });
 
 app.get('/item/:itemId', (req, res) => {
