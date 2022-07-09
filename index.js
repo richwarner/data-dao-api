@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-    res.json({"hello"});
+    res.json("hello");
   });
 
 app.get('/item/:itemId', (req, res) => {
