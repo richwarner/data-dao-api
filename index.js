@@ -1,7 +1,6 @@
 // Define "require"
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const database = require('./database.json');
+import fs from 'fs';
+const database = JSON.parse(fs.readFileSync('./database.json'));
 
 /* Begin server section */
 import express from 'express';
