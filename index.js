@@ -11,34 +11,37 @@ const PORT = process.env.PORT || 3030; // default port to listen
 
 // Initialize server
 const corsOptions = {
-    origin: "http://localhost:3000"
+    origin: process.env.HTTP_ORIGIN || "http://localhost:3000"
 };
 const app = express();
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true })); // app.use(express.json());
 
-// API controller
-app.get('/', (req, res) => {
-  const randomId = `${Math.random()}`.slice(2);
-  const path = `item/${randomId}`;
-  res.setHeader('Content-Type', 'text/html');
-  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-  res.end(`Hello! Fetch one item: <a href="${path}">${path}</a>`);
-});
+// app.get('/', (req, res) => {
+//   const randomId = `${Math.random()}`.slice(2);
+//   const path = `item/${randomId}`;
+//   res.setHeader('Content-Type', 'text/html');
+//   res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+//   res.end(`Hello! Fetch one item: <a href="${path}">${path}</a>`);
+// });
 
+// Get all items in the database
 app.get('/items', (req, res) => {
     const database = JSON.parse(fs.readFileSync(DATABASE_FILE_PATH));
     res.json(database);
   });
 
+// Not yet implemented
 app.get('/item/:itemId', (req, res) => {
   const { itemId } = req.params;
   res.json({ itemId });
 });
 
+// Add an item: Push the file to web.storage, 
+//   grab the cid, and then add the item and metadata to our internal database
 app.post("/item", async function (req, res) {
-    console.log("req.body", req.body);
-    console.log("req.file", req.file);
+    
+    // Handle file upload using multer library
     try {
         await uploadFile(req, res);
         if (req.file == undefined) {
@@ -57,14 +60,14 @@ app.post("/item", async function (req, res) {
             message: `Could not upload the file: ${req.file.originalname}. ${err}`,
         });
     }
-    const { file, title, author, description, imageUri } = req.body;
-    // Construct storage helper with token and endpoint
+    
+    // Move file to permanent storage on web3.storage
+    // First, construct storage helper with token and endpoint
     const client = new Web3Storage({ token: process.env.STORAGE_API_TOKEN });
     console.log("Uploading file to permanent storage:", req.file); 
-    // Create file object
+    // Grab file (this could grab multiple files, but the argument passed currently is only one)
     const files = await getFilesFromPath(req.file.path);
     console.log("files:", files);
-    // const files = [new File([buffer], req.file.originalname)];
     // Pack files into a CAR and send to web3.storage
     const rootCid = await client.put(files); // Promise<CIDString>
     // Get info on the Filecoin deals that the CID is stored in
@@ -76,13 +79,16 @@ app.post("/item", async function (req, res) {
     // for (const file of storageFiles) {
     //     console.log(`${file.cid} ${file.name} ${file.size}`)
     // }   
-    // Clean up (delete) uploaded file that's now in perm storage
+
+    // Delete uploaded file that's now in perm storage
     try {
         fs.unlinkSync(req.file.path)
     } catch(err) {
         console.log(err);
     }
     
+    // Construct metadata for new item
+    const { file, title, author, description, imageUri } = req.body;
     // Generate ID
     const newId = uuid();
     // Create object 
@@ -93,7 +99,8 @@ app.post("/item", async function (req, res) {
         title: title,
         author: author,
         description: description, 
-        imageUri: imageUri
+        imageUri: imageUri,
+        fileUri: "https://" + rootCid + ".ipfs.dweb.link/" + req.file.originalname
     }
     // Append object
     const database = JSON.parse(fs.readFileSync(DATABASE_FILE_PATH));
